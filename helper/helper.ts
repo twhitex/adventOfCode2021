@@ -3,3 +3,37 @@ export const sumOfNumArray = (arr) => {
     arr.forEach(item => total += item);
     return total;
 };
+
+export const stringBuilder = (length: number, base?: number, log?: boolean) => {
+    let str = ""
+    for (let index = base ?? 0; index < (base ?? 0) + length; index++) {
+        if (index == base ?? 0)
+            str = index.toString();
+        else
+            str += `,${index.toString()}`
+    }
+    if (log)
+        console.log(str)
+    return str
+}
+
+export const stringBuilderNeg = (length: number, base?: number, log?: boolean) => {
+    let str = ""
+    for (let index = base; index > base - length; index--) {
+        if (index == base ?? 0)
+            str = index.toString();
+        else
+            str += `,${index.toString()}`
+    }
+    if (log)
+        console.log(str)
+    return str
+}
+
+
+type DictValType = string | number | boolean | {} | Array<any>
+
+export const safeSet = (dict: {}, key: any, val: DictValType) => {
+    if (!dict[key])
+        dict[key] = val
+}
