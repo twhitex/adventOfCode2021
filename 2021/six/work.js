@@ -16,7 +16,7 @@ var input_1 = require("./input");
 //each day 
 var sampleInput = [3, 4, 3, 1, 2];
 var i = 0;
-var stateArr = input_1.input.split(",").map(function (r) { return Number(r); });
+var stateArr = input_1.workInput.split(",").map(function (r) { return Number(r); });
 var _loop_1 = function () {
     var newFish = [];
     stateArr = stateArr.map(function (r) {

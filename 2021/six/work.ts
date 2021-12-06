@@ -1,4 +1,4 @@
-import { input } from "./input"
+import { workInput as input } from "./input"
 
 //every 7 days
 //number of days until it creates a new lanternfish
@@ -25,6 +25,8 @@ while (i < 80) {
     stateArr = [...stateArr, ...newFish]
     i++
 }
+
+
 
 console.log("part one", stateArr.length)
 

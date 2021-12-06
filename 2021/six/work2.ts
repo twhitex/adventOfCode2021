@@ -1,37 +1,41 @@
-import { input } from "./input"
+import { workInput as input } from "./input"
 
 //every 7 days
 //number of days until it creates a new lanternfish
 // const stateDict = {}
 //each day 
 
+let sampleInput = [3, 4, 3, 1, 2] // input.split(",").map(r => Number(r)) 
+let dict = new Map<number, number>()
+sampleInput.forEach((r, i) => dict.set(i, r))
 
-const sampleInput = [3, 4, 3, 1, 2]
+console.log(dict)
 
-let i = 0
-const dict = new Map<number, number>()
-
-// input.split(",")
-let stateArr = sampleInput.map(r => Number(r))
-let total = 0
-while (i < 256) {
-    const newFish: number[] = []
-    stateArr = stateArr.map(r => {
-        if (r == 0) {
-            newFish.push(8)
-            r = 6
+const reproduce = (fish: Map<number, number>, gen: number) => {
+    let i = 0
+    while (i < gen) {
+        let offspring = new Map<number, number>()
+        let j = 0
+        while (j < fish.size) {
+            // console.log("current", fish.get(j), "fish", fish, "offspring", offspring)
+            const current = fish.get(j)
+            if (current == 0) {
+                offspring.set(j, 6)
+                offspring.set(j + fish.size, 8)
+            }
+            else
+                offspring.set(j, current - 1)
+            j++
         }
-        else
-            r--
-        return r
-    })
-    //write the current state out to a file?
-    stateArr = [...stateArr, ...newFish]
-    
-    i++
+        // console.log("offspring", offspring)
+        fish = offspring
+        i++
+    }
+    return fish
 }
 
-console.log(stateArr.length)
-
-
-// console.log()
+let p1 = reproduce(dict, 80)
+console.log('p1 dict', p1)
+let p1Total = 0
+Object.keys(p1).forEach(r => p1Total += p1[r])
+console.log("p1", p1Total)
