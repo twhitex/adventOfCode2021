@@ -1,4 +1,4 @@
-import { sumOfNumArray } from "../helper/helper";
+import { sumOfNumArray } from "../../helper/helper";
 import { dayOneInput } from "./input";
 console.log("day one")
 //part one

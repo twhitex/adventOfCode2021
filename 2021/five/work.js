@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var helper_1 = require("../helper/helper");
+var helper_1 = require("../../helper/helper");
 var input_1 = require("./input");
 var log = console.log;
 log("day five");

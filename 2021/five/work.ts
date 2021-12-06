@@ -1,4 +1,4 @@
-import { safeSet, stringBuilder, stringBuilderNeg } from "../helper/helper"
+import { safeSet, stringBuilder, stringBuilderNeg } from "../../helper/helper"
 import { input } from "./input"
 
 const { log } = console
