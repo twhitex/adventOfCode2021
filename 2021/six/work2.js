@@ -1,6 +1,5 @@
 "use strict";
 exports.__esModule = true;
-var helper_1 = require("../../helper/helper");
 //every 7 days
 //number of days until it creates a new lanternfish
 // const stateDict = {}
@@ -15,32 +14,69 @@ sampleInput.forEach(function (r) {
     else
         dict.set(Number(r), 1);
 });
-console.log(dict);
-var revolution = function (map, gens) {
-    if (gens === void 0) { gens = 80; }
-    var range = Object.keys((0, helper_1.stringBuilder)(gens, 1).split(","));
-    console.log(range);
-    var _loop_1 = function () {
-        var newMap = new Map();
-        map.forEach(function (num, age, m) {
-            var _a, _b, _c;
-            if (age <= 0) {
-                newMap.set(6, num + ((_a = m.get(6)) !== null && _a !== void 0 ? _a : 0));
-                newMap.set(8, num + ((_b = m.get(8)) !== null && _b !== void 0 ? _b : 0));
-            }
-            else {
-                console.log();
-                newMap.set(age - 1, num + ((_c = m.get(age - 1)) !== null && _c !== void 0 ? _c : 0));
-            }
-        });
-        map = newMap;
-    };
-    for (var _ in range) {
-        _loop_1();
+var zeroTotal = 0;
+var oneTotal = 0;
+var twoTotal = 0;
+var threeTotal = 0;
+var fourTotal = 0;
+var fiveTotal = 0;
+var sixTotal = 0;
+var sevenTotal = 0;
+var eightTotal = 0;
+sampleInput.forEach(function (r) {
+    switch (r) {
+        case 0:
+            zeroTotal += 1;
+            break;
+        case 1:
+            oneTotal++;
+            break;
+        case 2:
+            twoTotal++;
+            break;
+        case 3:
+            threeTotal++;
+            break;
+        case 4:
+            fourTotal++;
+            break;
+        case 5:
+            fiveTotal++;
+            break;
+        case 6:
+            sixTotal++;
+            break;
+        case 7:
+            sevenTotal++;
+            break;
+        case 8:
+            eightTotal++;
+            break;
     }
-    return map;
-};
-console.log("result", revolution(dict, 1));
+});
+var i = 0;
+while (i < 80) {
+}
+// const revolution = (map: Map<number, number>, gens: number = 80) => {
+//     var range = Object.keys(stringBuilder(gens, 1).split(","))
+//     console.log(range)
+//     for (var _ in range) {
+//         let newMap = new Map<number, number>()
+//         map.forEach((num, age, m) => {
+//             if (age <= 0) {
+//                 newMap.set(6, num + (m.get(6) ?? 0))
+//                 newMap.set(8, num + (m.get(8) ?? 0))
+//             }
+//             else {
+//                 console.log()
+//                 newMap.set(age - 1, num + (m.get(age - 1) ?? 0))
+//             }
+//         })
+//         map = newMap
+//     }
+//     return map
+// }
+// console.log("result", revolution(dict, 1))
 // const revolution2 = (map: {}, generation: number = 80) => {
 //     let i = 0
 //     while (i < generation) {

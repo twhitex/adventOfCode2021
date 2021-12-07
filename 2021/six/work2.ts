@@ -61,7 +61,7 @@ sampleInput.forEach(r => {
 
 let i = 0
 while (i < 80) {
-
+    
 }
 // const revolution = (map: Map<number, number>, gens: number = 80) => {
 //     var range = Object.keys(stringBuilder(gens, 1).split(","))

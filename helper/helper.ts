@@ -51,3 +51,17 @@ export const safeSet2 = (dict: {}, key: any, val: DictValType, setType?: "overwr
                 break
         }
 }
+
+export const findLowest = (map: Map<number, number>) => {
+    let key = 0
+    let min = 0
+    map.forEach((v, k) => {
+        if (min == 0)
+            min = v
+        if (v < min) {
+            min = v
+            key = k
+        }
+    })
+    return { min, key }
+}
