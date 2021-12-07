@@ -31,7 +31,8 @@ var _loop_1 = function () {
     stateArr = __spreadArray(__spreadArray([], stateArr, true), newFish, true);
     i++;
 };
-while (i < 80) {
+while (i < 5) {
     _loop_1();
 }
+console.log(stateArr);
 console.log("part one", stateArr.length);

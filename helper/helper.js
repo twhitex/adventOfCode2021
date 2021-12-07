@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.safeSet = exports.stringBuilderNeg = exports.stringBuilder = exports.sumOfNumArray = void 0;
+exports.safeSet2 = exports.safeSet = exports.stringBuilderNeg = exports.stringBuilder = exports.sumOfNumArray = void 0;
 var sumOfNumArray = function (arr) {
     var total = 0;
     arr.forEach(function (item) { return total += item; });
@@ -40,3 +40,17 @@ var safeSet = function (dict, key, val) {
         dict[key] = val;
 };
 exports.safeSet = safeSet;
+var safeSet2 = function (dict, key, val, setType) {
+    if (!dict[key])
+        dict[key] = val;
+    else if (setType)
+        switch (setType) {
+            case "add":
+                dict[key] += val;
+                break;
+            case "overwrite":
+                dict[key] = val;
+                break;
+        }
+};
+exports.safeSet2 = safeSet2;

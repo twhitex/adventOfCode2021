@@ -37,3 +37,17 @@ export const safeSet = (dict: {}, key: any, val: DictValType) => {
     if (!dict[key])
         dict[key] = val
 }
+
+export const safeSet2 = (dict: {}, key: any, val: DictValType, setType?: "overwrite" | "add") => {
+    if (!dict[key])
+        dict[key] = val
+    else if (setType)
+        switch (setType) {
+            case "add":
+                dict[key] += val
+                break;
+            case "overwrite":
+                dict[key] = val
+                break
+        }
+}

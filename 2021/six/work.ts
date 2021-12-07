@@ -11,7 +11,7 @@ const sampleInput = [3, 4, 3, 1, 2]
 let i = 0
 let stateArr = input.split(",").map(r => Number(r))
 
-while (i < 80) {
+while (i < 5) {
     const newFish: number[] = []
     stateArr = stateArr.map(r => {
         if (r == 0) {
@@ -27,6 +27,6 @@ while (i < 80) {
 }
 
 
-
+console.log(stateArr)
 console.log("part one", stateArr.length)
 
