@@ -65,3 +65,7 @@ export const findLowest = (map: Map<number, number>) => {
     })
     return { min, key }
 }
+
+export const stringToArray = (str: string): string[] => {
+    return Object.keys(str).map(key => str[key])
+}

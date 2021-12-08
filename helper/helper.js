@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.findLowest = exports.safeSet2 = exports.safeSet = exports.stringBuilderNeg = exports.stringBuilder = exports.sumOfNumArray = void 0;
+exports.stringToArray = exports.findLowest = exports.safeSet2 = exports.safeSet = exports.stringBuilderNeg = exports.stringBuilder = exports.sumOfNumArray = void 0;
 var sumOfNumArray = function (arr) {
     var total = 0;
     arr.forEach(function (item) { return total += item; });
@@ -68,3 +68,7 @@ var findLowest = function (map) {
     return { min: min, key: key };
 };
 exports.findLowest = findLowest;
+var stringToArray = function (str) {
+    return Object.keys(str).map(function (key) { return str[key]; });
+};
+exports.stringToArray = stringToArray;
