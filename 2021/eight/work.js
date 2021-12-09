@@ -19,8 +19,6 @@ var digitLengthDict = {};
 Object.keys(digitDict).forEach(function (key) {
     digitLengthDict[Number(key)] = digitDict[key].length;
 });
-var split = sampleInput.split("\n").forEach(function (r) {
-});
 var determineOutput = function (check, input) {
     var output = 0;
     input.forEach(function (str) {
@@ -38,7 +36,7 @@ var determineOutput = function (check, input) {
     });
     return output;
 };
-// console.log("answer", determineOutput([1, 4, 7, 8], input.split("\n")))
+console.log("p1", determineOutput([1, 4, 7, 8], input_1.input.split("\n")));
 var map = function (input) {
     var map = new Map();
     map.set(1, input.filter(function (item) { return item.length == 2; })[0]);
@@ -90,17 +88,15 @@ var map = function (input) {
     });
     return map;
 };
-// var sample = ['acedgfb', 'cdfbe', 'gcdfa', 'fbcad', 'dab', 'cefabd', 'cdfgeb', 'eafb', 'cagedb', 'ab']
-// console.log(map(sample))
 var decode = function (input) {
     var total = 0;
-    input.forEach(function (row, i) {
+    input.forEach(function (row) {
         var split = row.split("|");
         var list1 = split[0].split(" ").filter(function (item) { return item; });
         var list2 = split[1].split(" ").filter(function (item) { return item; });
         var decodeMap = map(list1);
         var localTotal = '';
-        list2.forEach(function (item, idx) {
+        list2.forEach(function (item) {
             var match = null;
             if (item.length == 2)
                 match = 1;
@@ -131,14 +127,8 @@ var decode = function (input) {
             if (match > -1)
                 localTotal += match.toString();
         });
-        if (localTotal.length != 4)
-            console.log(i, decodeMap, localTotal);
         total += Number(localTotal);
     });
     return total;
 };
-console.log("p2", decode(input_1.input.split("\n")));
-//bcad cd cfbge cegabdf fcdeb defabc gebadf fdc adfbe ecadfg | dc fcd egdcfa dc
-//1397326 too high
-//987440 
-// 942610 too low?
+console.log("p2", decode(input_1.input.split("\n"))); //1055164
