@@ -91,14 +91,7 @@ split.forEach((r, i) => {
     }
 })
 
-function findAllIndexes<T>(arr: T[], val: T) {
-    let idxs = []
-    arr.forEach((v, i) => {
-        if (v == val)
-            idxs.push(i)
-    })
-    return idxs
-}
+
 
 type PointHelper = { val: string, idx: number, line: number }
 

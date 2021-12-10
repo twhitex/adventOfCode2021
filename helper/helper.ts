@@ -4,18 +4,24 @@ export const sumOfNumArray = (arr) => {
     return total;
 };
 
-export const stringBuilder = (length: number, base?: number, log?: boolean) => {
+export const stringBuilder = (length: number, base?: number, log?: boolean, exclusive?: boolean) => {
     let str = ""
-    for (let index = base ?? 0; index < (base ?? 0) + length; index++) {
-        if (index == base ?? 0)
+
+    let i = exclusive ? (base ?? 0) + 1 : base ?? 0
+    let len = exclusive ? length - 1 : length
+    for (let index = i; index < i + len; index++) {
+        if (index == i)
             str = index.toString();
         else
             str += `,${index.toString()}`
     }
+
     if (log)
         console.log(str)
     return str
 }
+
+
 
 export const stringBuilderNeg = (length: number, base?: number, log?: boolean) => {
     let str = ""
@@ -25,6 +31,7 @@ export const stringBuilderNeg = (length: number, base?: number, log?: boolean) =
         else
             str += `,${index.toString()}`
     }
+
     if (log)
         console.log(str)
     return str

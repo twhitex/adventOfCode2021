@@ -7,11 +7,12 @@ var sumOfNumArray = function (arr) {
     return total;
 };
 exports.sumOfNumArray = sumOfNumArray;
-var stringBuilder = function (length, base, log) {
-    var _a;
+var stringBuilder = function (length, base, log, exclusive) {
     var str = "";
-    for (var index = base !== null && base !== void 0 ? base : 0; index < (base !== null && base !== void 0 ? base : 0) + length; index++) {
-        if ((_a = index == base) !== null && _a !== void 0 ? _a : 0)
+    var i = exclusive ? (base !== null && base !== void 0 ? base : 0) + 1 : base !== null && base !== void 0 ? base : 0;
+    var len = exclusive ? length - 1 : length;
+    for (var index = i; index < i + len; index++) {
+        if (index == i)
             str = index.toString();
         else
             str += ",".concat(index.toString());

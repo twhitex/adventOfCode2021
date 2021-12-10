@@ -93,14 +93,6 @@ split.forEach(function (r, i) {
             break;
     }
 });
-function findAllIndexes(arr, val) {
-    var idxs = [];
-    arr.forEach(function (v, i) {
-        if (v == val)
-            idxs.push(i);
-    });
-    return idxs;
-}
 var checkPoint = function (idx, lineIdx, line) {
     if (!line)
         return null;
