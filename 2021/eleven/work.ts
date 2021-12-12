@@ -1,8 +1,8 @@
 import { stringToArray } from "../../helper/helper"
 import { input } from "./input"
 
-const sample = `
-5483143223
+const sample =
+    `5483143223
 2745854711
 5264556173
 6141336146
@@ -13,86 +13,135 @@ const sample = `
 4846848554
 5283751526`
 
-const smallSample = `
-11111
+const smallSample =
+    `11111
 19991
 19191
 19991
 11111`
 
-const logMap = (map, length) => {
-    let newStr = ""
-    map.forEach((v, k) => {
-        newStr += v.toString() + ((k + 1) % length == 0 ? "\n" : "")
-    })
-    console.log(newStr)
-}
+// const log2d = (chars: number[][]) => {
+//     let str = ""
+//     chars.forEach(c => {
+//         c.forEach(v => {
+//             str += v
+//         })
+//         str += "\n"
+//     })
+//     console.log(str)
+// }
 
-const findFlashes = (str: string, steps: number) => {
-    const split = str.split("\n").filter(i => i)
-    const lineLength = split[0].length
-    let map = new Map(), base = 0
-    split.forEach(l => {
-        if (l)
-            stringToArray(l).forEach((c, i) => {
-                map.set(i + base, Number(c))
-            })
-        base += l.length
+//check for any octopus with an energy level > 9 - flash it
+//flash: x x x
+//       x i x
+//       x x x
+//if any of the x's have an energy level > 0 - they also flash
+//any octopus that flashed (energy level > 9) has its energy level set to 0
+
+
+//this could be a lot more efficient..
+const countFlashes = (str: string, steps: number): number => {
+    let chars: number[][] = []
+    str.split("\n").forEach((l, i) => {
+        chars[i] = []
+        stringToArray(l).forEach(c => {
+            chars[i].push(Number(c))
+        })
     })
-    let i = 0, flashes = 0
+    let flashes = 0, i = 0
     while (i < steps) {
-        flashes += step(map, lineLength)
-        logMap(map, lineLength)
+        step(chars)
+        chars.forEach(c => {
+            c.forEach(v => {
+                if (v == 0)
+                    flashes++
+            })
+        })
         i++
     }
     return flashes
 }
 
-const step = (map: Map<number, number>, lineLength: number) => {
-    let triggerActions: number[] = []
-    let flashCount = 0
-    map.forEach((v, k) => {
-        if (v + 1 == 10) {
-            map.set(k, 0)
-            flashCount++
-            triggerActions.push(k)
-        } else {
-            map.set(k, v + 1)
-        }
+const step = (chars: number[][]): number => {
+    chars.forEach((c, y) => {
+        c.forEach((_, x) => {
+            chars[y][x] += 1
+        })
     })
-    triggerActions.forEach(t => flashCount += trigger(map, t, lineLength))
-    return flashCount
-}
-
-const trigger = (map: Map<number, number>, idx: number, length: number) => {
-    const l = idx - 1
-    const r = idx + 1
-    let flashCount = 0
-    flashCount += setCube(map, l - length, length) //topleft
-    flashCount += setCube(map, idx - length, length) //top
-    flashCount += setCube(map, r - length, length) //topright
-
-    flashCount += setCube(map, l, length) //left
-    // flashCount += setCube(map, idx, length) //center
-    flashCount += setCube(map, r, length) //right
-
-    flashCount += setCube(map, l + length, length) //botleft
-    flashCount += setCube(map, idx + length, length) //bot
-    flashCount += setCube(map, r + length, length) //botright
-    return flashCount
-
-}
-
-const setCube = (map: Map<number, number>, idx: number, length: number) => {
-    const val = map.get(idx)
-    if (!val)
-        return 0
-    if (val + 1 == 10) {
-        map.set(idx, 0)
-        return trigger(map, idx, length) + 1
-    }
-    map.set(idx, val + 1)
+    if (canFlash(chars))
+        flash(chars)
     return 0
 }
 
-console.log("p1", findFlashes(sample, 3))
+const canFlash = (chars: number[][]) => {
+    let willFlashArr = []
+    chars.forEach(c => {
+        c.forEach((v, x) => {
+            if (v == 10)
+                willFlashArr.push(x)
+        })
+    })
+    return willFlashArr.length > 0
+}
+
+const flash = (chars: number[][]) => {
+    if (!canFlash(chars))
+        return
+    chars.forEach((c, y) => {
+        c.forEach((_, x) => {
+            if (chars[y][x] == 10) {
+                //flash it
+                flashHelper(y - 1, x - 1, chars) //top left
+                flashHelper(y - 1, x, chars) //top
+                flashHelper(y - 1, x + 1, chars) //top right
+
+                flashHelper(y, x - 1, chars)//left
+                flashHelper(y, x + 1, chars)//right
+
+                flashHelper(y + 1, x - 1, chars) //bot left
+                flashHelper(y + 1, x, chars) //bot
+                flashHelper(y + 1, x + 1, chars) //bot right
+
+                chars[y][x] = 0 //set to zero
+            }
+        })
+    })
+    return flash(chars)
+}
+const flashHelper = (y, x, chars) => {
+    if (chars[y])
+        if (chars[y][x]) {
+            if (chars[y][x] == 10 || chars[y][x] == 0)
+                return
+            chars[y][x] += 1
+        }
+}
+
+console.log("p1", countFlashes(input, 100))
+
+const part2 = (str: string) => {
+    let chars: number[][] = [], maxLength = 0
+    str.split("\n").forEach((l, i) => {
+        chars[i] = []
+        stringToArray(l).forEach(c => {
+            chars[i].push(Number(c))
+            maxLength++
+        })
+    })
+    let stop = false, i = 0
+    while (!stop) {
+        step(chars)
+        let flashCount = 0
+        chars.forEach(c => {
+            c.forEach(v => {
+                if (v == 0)
+                    flashCount++
+            })
+        })
+        stop = flashCount == maxLength
+        i++
+    }
+    return i
+}
+
+console.log("p2", part2(input))
