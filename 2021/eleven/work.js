@@ -20,6 +20,7 @@ var smallSample = "11111\n19991\n19191\n19991\n11111";
 //       x x x
 //if any of the x's have an energy level > 0 - they also flash
 //any octopus that flashed (energy level > 9) has its energy level set to 0
+//this could be a lot more efficient..
 var countFlashes = function (str, steps) {
     var chars = [];
     str.split("\n").forEach(function (l, i) {
