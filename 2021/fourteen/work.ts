@@ -17,42 +17,39 @@ BB -> N
 BC -> B
 CC -> N
 CN -> C`
+
 const polymerize = (input: string, steps: number) => {
     let split = input.split("\n").filter(x => x)
-    let instructionDict = new Map(), stack = []
+    let instructionDict = new Map(), arr = []
     let countDict = new Map()
-
+    let matchDict = new Map()
     split.forEach((l, i) => {
         if (i == 0) {
-            stack = new Array(l.length).fill(0).map((_, j) => {
+            arr = new Array(l.length).fill(0).map((_, j) => {
                 countDict.set(l[j], (countDict.get(l[j]) ?? 0) + 1)
                 return l[j]
             })
-
+            for (let j = 0; j < arr.length; j++) {
+                if (arr[j + 1])
+                    matchDict.set(arr[j] + arr[j + 1], (matchDict.get(arr[j] + arr[j + 1]) ?? 0) + 1)
+            }
+        } else {
+            const instr = l.split(" ")
+            instructionDict.set(instr[0], instr[2])
         }
-        const instr = l.split(" ")
-        instructionDict.set(instr[0], instr[2])
-
     })
-
     let stepIdx = 0
     while (stepIdx < steps) {
-        let i = 0
-        while (true) {
-            if (!stack[i + 1])
-                break;
-            let insert = instructionDict.get(stack[i] + stack[i + 1])
-
-            countDict.set(insert, (countDict.get(insert) ?? 0) + 1)
-            stack.splice(i + 1, 0, insert) //have to throw away what we don't need to stop it from getting so large.. I'm already tracking the counts of each so, it's fine..
-            i += 2 //skip 2 to make up for the item we just inserted
-        }
+        let copy = new Map()
+        matchDict.forEach((val, key) => {
+            var insert = instructionDict.get(key)
+            countDict.set(insert, (countDict.get(insert) ?? 0) + val)
+            copy.set(key[0] + insert, (copy.get(key[0] + insert) ?? 0) + val)
+            copy.set(insert + key[1], (copy.get(insert + key[1]) ?? 0) + val)
+        })
+        matchDict = copy
         stepIdx++
     }
-
-    console.log(stack)
-    console.log(countDict)
-
     let min: { val: number, key: string }, max: { val: number, key: string }
     countDict.forEach((v, k) => {
         const val = { key: k, val: v }
@@ -66,8 +63,7 @@ const polymerize = (input: string, steps: number) => {
                 max = val
         }
     })
-
-    console.log("result: ", max.val - min.val)
+    console.log(`steps: ${steps} - result: `, max.val - min.val)
 }
-
-polymerize(input, 40)
+polymerize(input, 10) //p1
+polymerize(input, 40) //p2
