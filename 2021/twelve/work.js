@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -9,87 +20,74 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 exports.__esModule = true;
+var input_1 = require("./input");
 var sample = "start-A\nstart-b\nA-c\nA-b\nb-d\nA-end\nb-end";
-//start -> end
-//lowercase letters are small caves
-//can only travel through small caves once
+var sample2 = "dc-end\nHN-start\nstart-kj\ndc-start\ndc-HN\nLN-dc\nHN-end\nkj-sa\nkj-HN\nkj-dc";
+var sample3 = "fs-end\nhe-DX\nfs-he\nstart-DX\npj-DX\nend-zg\nzg-sl\nzg-pj\npj-he\nRW-he\nfs-DX\npj-RW\nzg-RW\nstart-pj\nhe-WI\nzg-he\npj-fs\nstart-RW";
 var buildMap = function (input) {
-    var paths = new Map();
-    input.forEach(function (route) {
-        var path = route.split("-");
-        var p1 = path[0];
-        var p2 = path[1];
-        var mp1 = paths.get(p1);
-        var mp2 = paths.get(p2);
-        if (p1 == "start") {
-            if (!mp1)
-                paths.set(p1, [p2]);
-            else
-                paths.set(p1, __spreadArray(__spreadArray([], mp1, true), [p2], false));
-        }
-        else if (p2 == "start") {
-            if (!mp2)
-                paths.set(p2, [p1]);
-            else
-                paths.set(p2, __spreadArray(__spreadArray([], mp2, true), [p1], false));
-        }
-        else {
-            if (!mp1)
-                paths.set(p1, [p2]);
-            else
-                paths.set(p1, __spreadArray(__spreadArray([], mp1, true), [p2], false));
-            if (!mp2)
-                paths.set(p2, [p1]);
-            else
-                paths.set(p2, __spreadArray(__spreadArray([], mp2, true), [p1], false));
-        }
+    var map = new Map();
+    input.split("\n").forEach(function (x) {
+        var c = x.split("-");
+        if (c[1] != "start")
+            map.set(c[0], map.get(c[0]) ? __spreadArray(__spreadArray([], map.get(c[0]), true), [c[1]], false) : [c[1]]);
+        if (c[0] != "start")
+            map.set(c[1], map.get(c[1]) ? __spreadArray(__spreadArray([], map.get(c[1]), true), [c[0]], false) : [c[0]]);
     });
-    return paths;
+    return map;
 };
-var navigate = function (paths) {
-    var uniquePaths = [];
-    paths.forEach(function (val, key) {
-    });
-    console.log(uniquePaths);
-};
-// navigate(buildMap(sample.split("\n")))
-var x = function (input) {
-    var uniqueCaves = [];
-    var split = input.split("\n");
-    // const starts = split.filter(item => item.includes("start")).map(str => str.replace("start", "").replace("-", ""))
-    var stack = ["start"];
-    //keep an array as the 'current' node to search for.. like a stack
-    //loop through it until u get to the end .. save that to a string then unravel from there...
-    var top = stack[0], depth = 0;
-    var oneWayPathsVisited = [];
+var part1 = function (map) {
+    var paths = [], stack = [{ name: "start", visited: ["start"], smallCount: 0 }];
     var _loop_1 = function () {
-        var dCheck = depth;
-        split.forEach(function (path) {
-            var singlePath = top.match(/a-z/);
-            var caves = path.split("-");
-            if (caves.includes(top)) {
-                top = caves[0] == top ? caves[1] : caves[0];
-                stack.push(top);
-                depth++;
-                return;
+        var pos = stack.pop();
+        map.get(pos.name).forEach(function (next) {
+            var path = __spreadArray(__spreadArray([], pos.visited, true), [next], false);
+            var isLowerCase = next == next.toLowerCase();
+            if (next == "end")
+                paths.push({ path: path.join(", "), smallCount: pos.smallCount });
+            else if (!isLowerCase)
+                stack.push({ name: next, visited: path, smallCount: pos.smallCount });
+            else if (!pos.visited.includes(next) && isLowerCase) {
+                stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1 });
             }
-            if (dCheck != depth)
-                return;
         });
-        console.log("depth: ".concat(depth, " - ").concat(stack));
-        if (stack[stack.length - 1] == "end") {
-            console.log("full path:", stack);
-            stack.pop();
-        }
-        if (stack.length > 10)
-            stack = [];
     };
     while (stack.length > 0) {
         _loop_1();
     }
-    // console.log(starts)
-    //from 'start' how many paths end at 'end' ?
+    console.log(paths.filter(function (x) { return x.smallCount > 0; }).length);
 };
-var navigate2 = function (starts) {
+var part2 = function (map) {
+    var uniqueSmallCaves = [];
+    map.forEach(function (_, k) {
+        if (!["start", "end"].includes(k))
+            if (k == k.toLowerCase() && !uniqueSmallCaves.includes(k)) {
+                uniqueSmallCaves.push(k);
+            }
+    });
+    var paths = [], stack = [{ name: "start", visited: ["start"], smallCount: 0, allowedDuplicateSmallCaves: uniqueSmallCaves }];
+    var _loop_2 = function () {
+        var pos = stack.pop();
+        map.get(pos.name).forEach(function (next) {
+            var path = __spreadArray(__spreadArray([], pos.visited, true), [next], false);
+            var isLowerCase = next == next.toLowerCase();
+            if (next == "end")
+                paths.push({ path: path.join(", "), smallCount: pos.smallCount });
+            else if (!isLowerCase)
+                stack.push(__assign(__assign({}, pos), { name: next, visited: path }));
+            else if (isLowerCase) {
+                if (!pos.visited.includes(next)) {
+                    stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1, allowedDuplicateSmallCaves: pos.allowedDuplicateSmallCaves });
+                    return;
+                }
+                if (pos.allowedDuplicateSmallCaves.includes(next)) {
+                    stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1, allowedDuplicateSmallCaves: [] });
+                }
+            }
+        });
+    };
+    while (stack.length > 0) {
+        _loop_2();
+    }
+    console.log(paths.length);
 };
-x(sample);
+part2(buildMap(input_1.input));

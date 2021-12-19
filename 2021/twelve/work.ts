@@ -8,92 +8,106 @@ b-d
 A-end
 b-end`
 
-//start -> end
-//lowercase letters are small caves
-//can only travel through small caves once
-const buildMap = (input: string[]): Map<string, string[]> => {
-    const paths = new Map()
-    input.forEach(route => {
-        const path = route.split("-")
-        const p1 = path[0]
-        const p2 = path[1]
-        const mp1 = paths.get(p1)
-        const mp2 = paths.get(p2)
-        if (p1 == "start") {
-            if (!mp1)
-                paths.set(p1, [p2])
-            else
-                paths.set(p1, [...mp1, p2])
-        } else if (p2 == "start") {
-            if (!mp2)
-                paths.set(p2, [p1])
-            else
-                paths.set(p2, [...mp2, p1])
-        } else {
-            if (!mp1)
-                paths.set(p1, [p2])
-            else
-                paths.set(p1, [...mp1, p2])
-            if (!mp2)
-                paths.set(p2, [p1])
-            else
-                paths.set(p2, [...mp2, p1])
-        }
+const sample2 = `dc-end
+HN-start
+start-kj
+dc-start
+dc-HN
+LN-dc
+HN-end
+kj-sa
+kj-HN
+kj-dc`
+
+const sample3 = `fs-end
+he-DX
+fs-he
+start-DX
+pj-DX
+end-zg
+zg-sl
+zg-pj
+pj-he
+RW-he
+fs-DX
+pj-RW
+zg-RW
+start-pj
+he-WI
+zg-he
+pj-fs
+start-RW`
+
+type MyStack = { name: string, visited: string[], smallCount: number }
+
+const buildMap = (input: string) => {
+    let map = new Map()
+    input.split("\n").forEach(x => {
+        const c = x.split("-")
+        if (c[1] != "start")
+            map.set(c[0], map.get(c[0]) ? [...map.get(c[0]), c[1]] : [c[1]])
+        if (c[0] != "start")
+            map.set(c[1], map.get(c[1]) ? [...map.get(c[1]), c[0]] : [c[0]])
     })
-    return paths
+    return map
 }
 
-const navigate = (paths: Map<string, string[]>) => {
-    const uniquePaths = []
-    paths.forEach((val, key) => {
-
-    })
-    console.log(uniquePaths)
-}
-
-// navigate(buildMap(sample.split("\n")))
-const x = (input: string) => {
-    const uniqueCaves = []
-    const split = input.split("\n")
-    // const starts = split.filter(item => item.includes("start")).map(str => str.replace("start", "").replace("-", ""))
-
-    let stack = ["start"]
-
-    //keep an array as the 'current' node to search for.. like a stack
-    //loop through it until u get to the end .. save that to a string then unravel from there...
-    let top = stack[0], depth = 0
-    let oneWayPathsVisited = []
+const part1 = (map: Map<string, string[]>) => {
+    const paths: { path: string, smallCount: number }[] = [], stack: MyStack[] = [{ name: "start", visited: ["start"], smallCount: 0 }]
     while (stack.length > 0) {
-        let dCheck = depth
-        split.forEach(path => {
-            let singlePath = top.match(/a-z/)
-            
-            const caves = path.split("-")
-            if (caves.includes(top)) {
-                top = caves[0] == top ? caves[1] : caves[0]
-                stack.push(top)
-                depth++
-                return
+        let pos = stack.pop()
+        map.get(pos.name).forEach(next => {
+            let path = [...pos.visited, next]
+            const isLowerCase = next == next.toLowerCase()
+            if (next == "end")
+                paths.push({ path: path.join(", "), smallCount: pos.smallCount })
+            else if (!isLowerCase)
+                stack.push({ name: next, visited: path, smallCount: pos.smallCount })
+            else if (!pos.visited.includes(next) && isLowerCase) {
+                stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1 })
             }
-            if (dCheck != depth)
-                return
         })
-        console.log(`depth: ${depth} - ${stack}`)
-        if (stack[stack.length - 1] == "end") {
-            console.log("full path:", stack)
-            stack.pop()
-        }
-        if (stack.length > 10)
-            stack = []
-
     }
-
-    // console.log(starts)
-    //from 'start' how many paths end at 'end' ?
+    console.log(paths.filter(x => x.smallCount > 0).length)
 }
 
-const navigate2 = (starts: string[],) => {
 
+part1(buildMap(input)) // 4495
+
+type MyStack2 = MyStack & { allowedDuplicateSmallCaves: string[] }
+const part2 = (map: Map<string, string[]>) => {
+    let uniqueSmallCaves = []
+    map.forEach((_, k) => {
+        if (!["start", "end"].includes(k))
+            if (k == k.toLowerCase() && !uniqueSmallCaves.includes(k)) {
+                uniqueSmallCaves.push(k)
+            }
+    })
+    const paths: { path: string, smallCount: number }[] = [], stack: MyStack2[] = [{ name: "start", visited: ["start"], smallCount: 0, allowedDuplicateSmallCaves: uniqueSmallCaves }]
+    while (stack.length > 0) {
+        let pos = stack.pop()
+        map.get(pos.name).forEach(next => {
+            let path = [...pos.visited, next]
+            const isLowerCase = next == next.toLowerCase()
+            if (next == "end")
+                paths.push({ path: path.join(", "), smallCount: pos.smallCount })
+            else if (!isLowerCase)
+                stack.push({ ...pos, name: next, visited: path })
+            else if (isLowerCase) {
+                if (!pos.visited.includes(next)) {
+                    stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1, allowedDuplicateSmallCaves: pos.allowedDuplicateSmallCaves })
+                    return
+                }
+                if (pos.allowedDuplicateSmallCaves.includes(next)) {
+                    stack.push({ name: next, visited: path, smallCount: pos.smallCount + 1, allowedDuplicateSmallCaves: [] })
+                }
+            }
+        })
+    }
+    console.log(paths.length)
 }
 
-x(sample)
+part2(buildMap(input)) //131254
+
+
+
