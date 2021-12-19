@@ -56,6 +56,7 @@ var part1 = function (map) {
     }
     console.log(paths.filter(function (x) { return x.smallCount > 0; }).length);
 };
+part1(buildMap(input_1.input)); // 4495
 var part2 = function (map) {
     var uniqueSmallCaves = [];
     map.forEach(function (_, k) {
@@ -90,4 +91,4 @@ var part2 = function (map) {
     }
     console.log(paths.length);
 };
-part2(buildMap(input_1.input));
+part2(buildMap(input_1.input)); //131254
