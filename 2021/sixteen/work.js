@@ -27,6 +27,11 @@ var parseHierachy = function (hex) {
     var version = parseInt(binary[0] + binary[1] + binary[2], 2);
     var typeId = parseInt(binary[3] + binary[4] + binary[5], 2);
     binary = binary.slice(6);
-    console.log(version, typeId, binary);
+    if (typeId == 4) { // literal conversion
+        //leading zeroes til multiple of 4
+        new Array(binary.length).fill(0).forEach(function (_, i) {
+            var val = binary.charAt(i);
+        });
+    }
 };
 parseHierachy('D2FE28');
