@@ -27,6 +27,46 @@ var parseHierachy = function (hex) {
     var version = parseInt(binary[0] + binary[1] + binary[2], 2);
     var typeId = parseInt(binary[3] + binary[4] + binary[5], 2);
     binary = binary.slice(6);
-    console.log(version, typeId, binary);
+    if (typeId == 4) { // literal conversion
+        //chunk every 5
+        var newBinary = "";
+        for (var i = 4; i < binary.length; i += 5) {
+            // binArr.push(binary.charAt(i - 4)) // if i need the leading bit - it's here
+            newBinary += binary.charAt(i - 3) + binary.charAt(i - 2) + binary.charAt(i - 1) + binary.charAt(i);
+        }
+        console.log(parseInt(newBinary, 2));
+        return;
+    }
+    //the first trailing bit is the lengthTypeId
+    var lengthType = binary[0] == "0" ? 15 : 11;
+    binary = binary.slice(1);
+    var lengthOfSubPackets = "";
+    for (var i = 0; i < lengthType; i++) {
+        lengthOfSubPackets += binary.charAt(i);
+    }
+    var length = parseInt(lengthOfSubPackets, 2);
+    console.log("sub packet length", length);
 };
-parseHierachy('D2FE28');
+// parseHierachy('D2FE28') //sample1
+// parseHierachy('38006F45291200') //sample2
+// //110100
+// //010100
+// console.log(parseInt("01010", 2))
+// console.log(parseInt("1000100100", 2))
+var test = function (binary) {
+    var version = parseInt(binary[0] + binary[1] + binary[2], 2);
+    var typeId = parseInt(binary[3] + binary[4] + binary[5], 2);
+    binary = binary.slice(6);
+    if (typeId == 4) { // literal conversion
+        //chunk every 5
+        var newBinary = "";
+        for (var i = 4; i < binary.length; i += 5) {
+            // binArr.push(binary.charAt(i - 4)) // if i need the leading bit - it's here
+            newBinary += binary.charAt(i - 3) + binary.charAt(i - 2) + binary.charAt(i - 1) + binary.charAt(i);
+        }
+        console.log(parseInt(newBinary, 2));
+        return;
+    }
+};
+test("11010001010");
+test("0101001000100100");
